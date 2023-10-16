@@ -35,46 +35,53 @@ public class HelloWorld {
            FSDirectory fsdir = FSDirectory.open(new File("./resources/documenti_news").toPath());
            
            
-           //IndexWriter configuration
+           //IndexWriter configuration, sono le impostazioni del writer (tipo qui do analizzatore standard)
            IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
            
            //Index directory is created if not exists or overwritten
+           //ATTENZIONE: LO STESSO DOCUMENTO LO AGGIUNGE PIU' VOLTE se rieseguo il programma
            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
            
            
-           //Create IndexWriter
+           //Create IndexWriter, come parametro gli passo il path del file system e la configurazione del writer
+           //CREERA' L INDICE INVERSO
            IndexWriter writer = new IndexWriter(fsdir, iwc);
            //Create document and add fields
            
            
-           Document doc = new Document();
+           Document doc = new Document(); //vuoto
            doc.add(
         		   new TextField("titolo", "Articolo Web Numoro 1", Field.Store.YES)
         		   );
-           
+           //Il campo Field.Store.YES indica che il campo deve essere memorizzato cosi come passato (INTERO) nell'indice inverso
            doc.add(new TextField("introduzione", "questa è l'introduzione del mio documento", Field.Store.YES));
            doc.add(new TextField("contenuto", "questo è il contenuto del mio documento", Field.Store.NO));
            doc.add(new TextField("commenti", "questo è un commento di un utente di esempio", Field.Store.NO));
-           
-           //add document to index
+           //add document to index. Aggiunta e cancellazione su quello in RAM
            writer.addDocument(doc);
            
            
-           //close IndexWriter
+           //close IndexWriter e salva su DISCO FISSO
            writer.close();
            
-           //Create the IndexSearcher
+           //Create the IndexSearcher, apre l'indice inverso scritto su disco fisso
            IndexSearcher searcher = new IndexSearcher(DirectoryReader.open(fsdir));
            
            
-           //Create the query parser with the default field and analyzer
-           QueryParser qp = new QueryParser("titolo", new StandardAnalyzer());
+           //Create the query parser with the default field and analyzer. Analogamente all'index writer, gli dico come
+           //trattare la query (in questo caso analizzatore standard SEMPRE COME i documenti -> Lucene non controlla)
+           //il primo parametro è il campo di default utilizzato per la ricerca SE NON SPECIFICATO dall'utente
+           QueryParser qp = new QueryParser("commenti", new StandardAnalyzer());
            
-           //Parse the query
+           //Parse the query. Per costruisco la query uso l'oggetto QueryParser e gli passo la stringa da parsare
            Query q = qp.parse("utente");
-           
-           //Search
+           //Quindi ora cerco utente nel campo commenti
+
+
+           //Search i top secondo parametro (10 in questo caso) documenti che matchano la query
            TopDocs topdocs = searcher.search(q, 10);
+
+           //in questo caso stampo solo i documenti
            System.out.println("Found " + topdocs.totalHits.value + " document(s).");
            
        } catch (IOException ex) {
