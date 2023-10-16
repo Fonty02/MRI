@@ -39,7 +39,7 @@ public class HelloWorld {
            IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
            
            //Index directory is created if not exists or overwritten
-           //ATTENZIONE: LO STESSO DOCUMENTO LO AGGIUNGE PIU' VOLTE se rieseguo il programma
+           //ATTENZIONE: CREATE RICREA DA CAPO l'INDICE, CREATE_OR_APPEND AGGIUNGE DOCUMENTI ALL'INDICE (quelli gia esistenti li riaggiunge)
            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
            
            
