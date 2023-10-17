@@ -54,9 +54,9 @@ public class MyAliceInWonderland {
                         System.out.println(text.trim());
                         System.out.println("-----------");
                         Document doc = new Document();
-                        doc.add(new TextField("titolo", title, Field.Store.NO));
-                        doc.add(new TextField("autore", author, Field.Store.NO));
-                        doc.add(new TextField("capitolo", lastChapter, Field.Store.NO));
+                        doc.add(new TextField("titolo", title, Field.Store.YES));
+                        doc.add(new TextField("autore", author, Field.Store.YES));
+                        doc.add(new TextField("capitolo", lastChapter, Field.Store.YES));
                         doc.add(new Field("testo", text, ft));
                         iwr.addDocument(doc);
                     }
