@@ -33,14 +33,15 @@ public class TestAnalyzer {
      */
     public static List<String> getTokens(Reader reader, Analyzer analyzer) throws IOException {
         List<String> tokens = new ArrayList<>();
-        TokenStream tokenStream = analyzer.tokenStream("text", reader);
+        TokenStream tokenStream = analyzer.tokenStream("", reader); //utilizza la createComponents da noi definita
         tokenStream.reset();
         CharTermAttribute cattr = tokenStream.addAttribute(CharTermAttribute.class);
+        //Diciamo che memorizza i termini
         while (tokenStream.incrementToken()) {
             String token = cattr.toString();
             tokens.add(token);
         }
-        tokenStream.end();
+        tokenStream.end(); //chiudo il token stream
         return tokens;
     }
 

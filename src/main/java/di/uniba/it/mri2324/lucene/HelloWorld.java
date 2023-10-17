@@ -33,15 +33,14 @@ public class HelloWorld {
        try {
            //Open a directory from the file system (index directory)
            FSDirectory fsdir = FSDirectory.open(new File("./resources/documenti_news").toPath());
-           
-           
+
            //IndexWriter configuration, sono le impostazioni del writer (tipo qui do analizzatore standard)
            IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
            
            //Index directory is created if not exists or overwritten
-           //ATTENZIONE: LO STESSO DOCUMENTO LO AGGIUNGE PIU' VOLTE se rieseguo il programma
            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-           
+           //CREATE -> CANCELLA E RICOSTRUISCE DA ZERO
+           //CREATE_OR_APPEND -> SE ESISTE LO RIAGGIUNGE, ALTRIMENTI LO CREA
            
            //Create IndexWriter, come parametro gli passo il path del file system e la configurazione del writer
            //CREERA' L INDICE INVERSO
@@ -65,18 +64,23 @@ public class HelloWorld {
            writer.close();
            
            //Create the IndexSearcher, apre l'indice inverso scritto su disco fisso
+           //DirectoryReader.open vuole in input un oggetto di tipo FSDirectory (contiene l'indice inverso)
            IndexSearcher searcher = new IndexSearcher(DirectoryReader.open(fsdir));
            
            
-           //Create the query parser with the default field and analyzer. Analogamente all'index writer, gli dico come
+           //Create the query parser with the default field and analyzer.
+           //Analogamente all'index writer, gli dico come
            //trattare la query (in questo caso analizzatore standard SEMPRE COME i documenti -> Lucene non controlla)
            //il primo parametro è il campo di default utilizzato per la ricerca SE NON SPECIFICATO dall'utente
            QueryParser qp = new QueryParser("commenti", new StandardAnalyzer());
-           
+
+
            //Parse the query. Per costruisco la query uso l'oggetto QueryParser e gli passo la stringa da parsare
            Query q = qp.parse("utente");
            //Quindi ora cerco utente nel campo commenti
-
+           //Dichiarazione esplitia: contenuto:documento AND titolo:Web        (per esempio)
+                        //cerca documento nel campo contenuto e Web nel campo titolo
+           //l'oggetto query contiene i termini della query dovuti al processing
 
            //Search i top secondo parametro (10 in questo caso) documenti che matchano la query
            TopDocs topdocs = searcher.search(q, 10);
