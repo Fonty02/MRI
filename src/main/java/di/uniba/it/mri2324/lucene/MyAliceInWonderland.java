@@ -5,9 +5,9 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.*;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.IOContext;
 import org.apache.lucene.store.IndexInput;
@@ -25,11 +25,15 @@ public class MyAliceInWonderland {
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
             IndexWriter iwr=new IndexWriter(fsDirectory,iwc);
 
-            FieldType ft = new FieldType(TextField.TYPE_STORED);
-            ft.setTokenized(true); //done as default
-            ft.setStoreTermVectors(true);
-            ft.setStoreTermVectorPositions(true);
+            FieldType ft = new FieldType(TextField.TYPE_STORED); //creo un mio FieldPersonalizzato
+            //TextField.TYPE_STORED -> memorizza il testo così com'è
+            ft.setTokenized(true); //deve effettuare la tokenizzazione (true), oppure no (false) (il TextField lo fa di default, al contrario dello StringField)
+            ft.setStoreTermVectors(true); //Aggiungi il vettore dei termini
+            ft.setStoreTermVectorPositions(true); //al vettore dei termini aggiungi le posizioni
             ft.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
+            //aggiungi FREQUENZA DOCUMENTO, POSIZIONE, OFFSET
+            //POSIZIONE -> Valore che indica la posizione del termine all'interno del documento (fatto in base ai termini)
+            //OFFSET -> Valore che indica la posizione del termine all'interno del documento (fatto in base ai caratteri)
 
             String line;
             String title = reader.readLine();
@@ -48,11 +52,6 @@ public class MyAliceInWonderland {
                         line = reader.readLine();
                     }
                     if (!text.equals("")) {
-                        System.out.println(title);
-                        System.out.println(author);
-                        System.out.println(lastChapter);
-                        System.out.println(text.trim());
-                        System.out.println("-----------");
                         Document doc = new Document();
                         doc.add(new TextField("titolo", title, Field.Store.YES));
                         doc.add(new TextField("autore", author, Field.Store.YES));
@@ -63,7 +62,29 @@ public class MyAliceInWonderland {
                 }
             }
             iwr.close();
-
+            IndexSearcher searcher=new IndexSearcher(DirectoryReader.open(fsDirectory));
+            QueryParser qp=new QueryParser("testo",new StandardAnalyzer());
+            Query q = qp.parse("\"The Had Matter\"~9999");
+            TopDocs topdocs = searcher.search(q, 10);
+            System.out.println("Query 1) Found " + topdocs.totalHits.value + " document(s)");
+            ScoreDoc[] hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
+            System.out.println("\n");
+            q = qp.parse("\"The Hat Matter\"~9999 AND \"Cheshire Cat\"~9999");
+            topdocs = searcher.search(q, 10);
+            System.out.println("Query 2) Found " + topdocs.totalHits.value + " document(s).");
+            System.out.println("\n");
+            q = qp.parse("(\"The Hat Matter\"~9999 OR \"Cheshire Cat\"~9999) AND \"Alice\""); // qua non manca un tilde9999?
+            topdocs = searcher.search(q, 10);
+            System.out.println("Query 3) Found " + topdocs.totalHits.value + " document(s).");
+            System.out.println("\n");
+            q = qp.parse("() AND \"Alice\"");
+            topdocs = searcher.search(q, 10);
+            System.out.println("Query 3) Found " + topdocs.totalHits.value + " document(s).");
+            System.out.println("\n");
         }
         catch (Exception e)
         {

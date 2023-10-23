@@ -3,3 +3,4 @@ resources/alice/*
 resources/myAliceIndex/*
 resources/documenti_news/*
 resources/postex/*
+*.class

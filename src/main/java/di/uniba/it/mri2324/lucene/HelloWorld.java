@@ -62,7 +62,7 @@ public class HelloWorld {
            
            //close IndexWriter e salva su DISCO FISSO
            writer.close();
-           
+
            //Create the IndexSearcher, apre l'indice inverso scritto su disco fisso
            //DirectoryReader.open vuole in input un oggetto di tipo FSDirectory (contiene l'indice inverso)
            IndexSearcher searcher = new IndexSearcher(DirectoryReader.open(fsdir));
@@ -73,15 +73,12 @@ public class HelloWorld {
            //trattare la query (in questo caso analizzatore standard SEMPRE COME i documenti -> Lucene non controlla)
            //il primo parametro è il campo di default utilizzato per la ricerca SE NON SPECIFICATO dall'utente
            QueryParser qp = new QueryParser("commenti", new StandardAnalyzer());
-
-
            //Parse the query. Per costruisco la query uso l'oggetto QueryParser e gli passo la stringa da parsare
            Query q = qp.parse("utente");
            //Quindi ora cerco utente nel campo commenti
            //Dichiarazione esplitia: contenuto:documento AND titolo:Web        (per esempio)
                         //cerca documento nel campo contenuto e Web nel campo titolo
            //l'oggetto query contiene i termini della query dovuti al processing
-
            //Search i top secondo parametro (10 in questo caso) documenti che matchano la query
            TopDocs topdocs = searcher.search(q, 10);
 

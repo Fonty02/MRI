@@ -26,7 +26,7 @@ public class AliceInWonderland {
 					
 					IndexWriterConfig config = new IndexWriterConfig(analyzer);
 					
-					config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+					config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 					IndexWriter writer = new IndexWriter(fsdir, config);
 					
 					

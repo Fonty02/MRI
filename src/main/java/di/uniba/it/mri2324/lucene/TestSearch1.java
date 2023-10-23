@@ -43,20 +43,21 @@ public class TestSearch1 {
         //Single term query
         //Query q = new TermQuery(new Term("name", "parker"));
         
-        //Boolean query
-        BooleanQuery.Builder qb = new BooleanQuery.Builder();
+        //Boolean query invece del QueryParse
+        BooleanQuery.Builder qb = new BooleanQuery.Builder(); //crea una query di tipo booleano
         qb.add(new TermQuery(new Term("name", "parker")), BooleanClause.Occur.SHOULD);
         qb.add(new TermQuery(new Term("powers", "agility")), BooleanClause.Occur.SHOULD);
-        Query q = qb.build();
-        
-        
+        Query q = qb.build(); //costruisci la query con questo metodo (invece del <QueryParser>.parse())
+		//query in OR che contengono o parker in nome o agility in power
+        //OCCUR.MUST --> AND
+		//OCCUR.SHOULD --> OR
         TopDocs topdocs = searcher.search(q, 10);
         System.out.println("Found " + topdocs.totalHits.value + " document(s). Method 1");
         
         ScoreDoc[] hits = topdocs.scoreDocs;
 		
 		for (int i = 0; i < hits.length; i++) {
-			Document hitDoc = searcher.doc(hits[i].doc);
+			Document hitDoc = searcher.doc(hits[i].doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
 			System.out.println(hitDoc.get("name") + ") " + hitDoc.get("super_name") + " " +  hits[i].score);
 		}
 		
@@ -64,6 +65,7 @@ public class TestSearch1 {
 		//Use of Lucene query Syntax
 		StandardAnalyzer analyzer = new StandardAnalyzer();
 		Query query = new QueryParser("name", analyzer).parse("name:parker OR powers:agility");
+		//Cerca in or
 		
 		topdocs = searcher.search(query, 10);
         System.out.println("\nFound " + topdocs.totalHits.value + " document(s). Method 2");
@@ -80,9 +82,10 @@ public class TestSearch1 {
 		//Multifield Query
 	    //add all possible fileds in multifieldqueryparser using indexreader getFieldNames method
 		QueryParser parser = new MultiFieldQueryParser( new String[] {"name", "super_name", "category", "powers"}, analyzer);
+		//MultiFieldQueryParser per cercare in piu campi (se non specificato dall'utente quello di default)
 		
 		query = parser.parse("agility");
-		
+		//in questo caso il field è agility
 		topdocs = searcher.search(query, 10);
         System.out.println("\nFound " + topdocs.totalHits.value + " document(s). Method ");
         
@@ -90,7 +93,7 @@ public class TestSearch1 {
 		
 		for (int i = 0; i < hits.length; i++) {
 			Document hitDoc = searcher.doc(hits[i].doc);
-			System.out.println(hitDoc.get("name") + ") " + hitDoc.get("super_name") + " " +  hits[i].score);
+			System.out.println(hitDoc.get("name") + ") " + hitDoc.get("super_name") + " " +  hits[i].score); //score di rilevanza. Calcolato con la strategia di default di Lucene, ovvermo IL BM25 (una variante del TF-IDF)
 		}
 
 		
