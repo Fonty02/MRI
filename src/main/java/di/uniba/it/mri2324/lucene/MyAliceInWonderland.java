@@ -64,8 +64,8 @@ public class MyAliceInWonderland {
             iwr.close();
             IndexSearcher searcher=new IndexSearcher(DirectoryReader.open(fsDirectory));
             QueryParser qp=new QueryParser("testo",new StandardAnalyzer());
-            Query q = qp.parse("\"The Had Matter\"~9999");
-            TopDocs topdocs = searcher.search(q, 10);
+            Query q = qp.parse("\"The Mad Hatter\"~9999");
+            TopDocs topdocs = searcher.search(q, 1000);
             System.out.println("Query 1) Found " + topdocs.totalHits.value + " document(s)");
             ScoreDoc[] hits = topdocs.scoreDocs;
             for (ScoreDoc hit : hits) {
@@ -73,17 +73,81 @@ public class MyAliceInWonderland {
                 System.out.println(hitDoc.get("testo") + ") " + hit.score);
             }
             System.out.println("\n");
-            q = qp.parse("\"The Hat Matter\"~9999 AND \"Cheshire Cat\"~9999");
-            topdocs = searcher.search(q, 10);
+            
+            
+            q = qp.parse("\"The Mad Hatter\"~9999 AND \"Cheshire Cat\"~9999");
+            topdocs = searcher.search(q, 1000);
             System.out.println("Query 2) Found " + topdocs.totalHits.value + " document(s).");
+            hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
             System.out.println("\n");
-            q = qp.parse("(\"The Hat Matter\"~9999 OR \"Cheshire Cat\"~9999) AND \"Alice\""); // qua non manca un tilde9999?
-            topdocs = searcher.search(q, 10);
+
+
+
+            q = qp.parse("(\"The Mat Hatter\"~9999 OR \"Cheshire Cat\"~9999) AND \"Alice\""); // qua non manca un tilde9999?
+            topdocs = searcher.search(q, 1000);
             System.out.println("Query 3) Found " + topdocs.totalHits.value + " document(s).");
+            hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
             System.out.println("\n");
-            q = qp.parse("() AND \"Alice\"");
-            topdocs = searcher.search(q, 10);
-            System.out.println("Query 3) Found " + topdocs.totalHits.value + " document(s).");
+
+
+
+            q = qp.parse("(\"King of hearts\" OR \"Queen of hearts\")"); // qua non manca un tilde9999?
+            topdocs = searcher.search(q, 1000);
+            System.out.println("Query 4) Found " + topdocs.totalHits.value + " document(s).");
+            hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
+            System.out.println("\n");
+
+            q = qp.parse("\"Queen of hearts\" AND \"Alice\""); // qua non manca un tilde9999?
+            topdocs = searcher.search(q, 1000);
+            System.out.println("Query 5) Found " + topdocs.totalHits.value + " document(s).");
+            hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
+            System.out.println("\n");
+
+            q = qp.parse("Alice~0.7"); // qua non manca un tilde9999?
+            topdocs = searcher.search(q, 1000);
+            System.out.println("Query 6) Found " + topdocs.totalHits.value + " document(s).");
+            hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
+            System.out.println("\n");
+
+            q = qp.parse("\"Alice\" AND NOT \"The Mad Hatter\""); // qua non manca un tilde9999?
+            topdocs = searcher.search(q, 1000);
+            System.out.println("Query 7) Found " + topdocs.totalHits.value + " document(s).");
+            hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
+            System.out.println("\n");
+
+
+            q = qp.parse("Alice^2\"The Mad Hatter\" OR \"The Mad Hatter\""); // qua non manca un tilde9999?
+            topdocs = searcher.search(q, 1000);
+            System.out.println("Query 8) Found " + topdocs.totalHits.value + " document(s).");
+            hits = topdocs.scoreDocs;
+            for (ScoreDoc hit : hits) {
+                Document hitDoc = searcher.doc(hit.doc); //hits[i].doc è l'id del documento. Mi permette di ritornare il documento
+                System.out.println(hitDoc.get("testo") + ") " + hit.score);
+            }
             System.out.println("\n");
         }
         catch (Exception e)
