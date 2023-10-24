@@ -30,10 +30,10 @@ public class IndexPostExample {
      */
     public static void main(String[] args) throws IOException {
         //define a custom field type that stores post information
-        FieldType ft = new FieldType(TextField.TYPE_NOT_STORED);
-        ft.setStoreTermVectors(true);
-        ft.setStoreTermVectorPositions(true);
-        ft.setStoreTermVectorOffsets(true);
+        FieldType ft = new FieldType(TextField.TYPE_NOT_STORED); //non memorizzo contenuto originale, faccio solo tokenizzazione e indexing
+        ft.setStoreTermVectors(true); //salva all'interno dell indice inverso
+        ft.setStoreTermVectorPositions(true); //salva vettore posizione parole
+        ft.setStoreTermVectorOffsets(true); //salva parole offset
         
         
         FSDirectory fsdir = FSDirectory.open(new File("./resources/postex").toPath());
