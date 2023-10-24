@@ -87,7 +87,7 @@ public class MyAliceInWonderland {
 
 
 
-            q = qp.parse("(\"The Mat Hatter\"~9999 OR \"Cheshire Cat\"~9999) AND \"Alice\""); // qua non manca un tilde9999?
+            q = qp.parse("(\"The Mad Hatter\"~9999 OR \"Cheshire Cat\"~9999) AND \"Alice\""); // qua non manca un tilde9999?
             topdocs = searcher.search(q, 1000);
             System.out.println("Query 3) Found " + topdocs.totalHits.value + " document(s).");
             hits = topdocs.scoreDocs;
